@@ -1,14 +1,15 @@
 {
-  "name": "basicQuery",
+  "name": "crowdFunding",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "start": "react-scripts start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a Hardhat Ignition module that deploys that contract.",
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.2.3",
     "@nomiclabs/hardhat-waffle": "^2.0.6",
@@ -16,6 +17,23 @@
     "hardhat": "^2.22.13"
   },
   "dependencies": {
-    "dotenv": "^16.4.5"
+    "ajv": "^6.0.0",
+    "ajv-keywords": "^3.0.0",
+    "dotenv": "^16.4.5",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-scripts": "^5.0.0"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

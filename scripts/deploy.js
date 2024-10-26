@@ -1,20 +1,16 @@
-const hre = require("hardhat");
-
+// scripts/deploy.js
 async function main() {
-  // Compile the contract
-  await hre.run('compile');
+    const CrowdFunding = await hre.ethers.getContractFactory("CrowdFunding");
+    const crowdFunding = await CrowdFunding.deploy();
 
-  const fundingGoal = ethers.utils.parseEther("1"); // Set funding goal to 1 ETH
-  const Crowdfunding = await hre.ethers.getContractFactory("Crowdfunding");
-  const crowdfunding = await Crowdfunding.deploy(fundingGoal);
+    await crowdFunding.deployed();
 
-  await crowdfunding.deployed();
-  console.log("Crowdfunding deployed to:", crowdfunding.address);
+    console.log("CrowdFunding contract deployed to:", crowdFunding.address);
 }
 
 main()
-  .then(() => process.exit(0))
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
-  });
+    .then(() => process.exit(0))
+    .catch((error) => {
+        console.error(error);
+        process.exit(1);
+    });
