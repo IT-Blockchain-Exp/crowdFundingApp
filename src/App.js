@@ -6,8 +6,7 @@ import CrowdFunding from './CrowdFunding.json';
 function App() {
     const [campaigns, setCampaigns] = useState([]);
     const [donationAmount, setDonationAmount] = useState({});
-    const [donationRefundAddress, setDonationRefundAddress] = useState({});
-    const contractAddress = "0x42db853c360f1f2dfbae8d79fd43b167f92aef40"; // Replace with your contract address
+    const contractAddress = "0x8408918B209D60b56c90C3D16FcBa910126ADB0d"; // Replace with your contract address
 
     const fetchCampaigns = useCallback(async () => {
         try {
@@ -39,7 +38,6 @@ function App() {
         const description = event.target.description.value;
         const target = ethers.utils.parseEther(event.target.target.value);
         const deadline = Math.floor(new Date(event.target.deadline.value).getTime() / 1000);
-        const image = event.target.image.value;
 
         try {
             const { ethereum } = window;
@@ -57,7 +55,6 @@ function App() {
                 description,
                 target,
                 deadline,
-                image,
                 { gasLimit: 3000000 }
             );
 
@@ -72,14 +69,9 @@ function App() {
 
     const handleDonate = async (campaignIndex) => {
         const amount = donationAmount[campaignIndex];
-        const refundAddress = donationRefundAddress[campaignIndex];
 
         if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
             alert("Please enter a valid donation amount.");
-            return;
-        }
-        if (!refundAddress) {
-            alert("Please enter a valid refund address.");
             return;
         }
 
@@ -94,8 +86,9 @@ function App() {
             const signer = provider.getSigner();
             const crowdFundingContract = new ethers.Contract(contractAddress, CrowdFunding.abi, signer);
 
-            const transaction = await crowdFundingContract.donateToCampaign(campaignIndex, refundAddress, {
-                value: ethers.utils.parseEther(amount.toString()),
+            // Pass only the campaignIndex and donation amount to the contract function
+            const transaction = await crowdFundingContract.donateToCampaign(campaignIndex, {
+                value: ethers.utils.parseEther(amount.toString()), // donation amount
                 gasLimit: 3000000
             });
 
@@ -144,40 +137,31 @@ function App() {
             </form>
 
             <div>
-    <h2>Active Campaigns</h2>
-    {campaigns.length === 0 ? (
-        <p className="no-campaigns">No campaigns available.</p>
-    ) : (
-        campaigns.map((campaign, index) => (
-            <div key={index} className="campaign-card">
-                <h3>{campaign.title}</h3>
-                <p>{campaign.description}</p>
-                <div className="campaign-details">
-                    <p><strong>Target:</strong> {ethers.utils.formatEther(campaign.target)} ETH</p>
-                    <p><strong>Collected:</strong> {ethers.utils.formatEther(campaign.amountCollected)} ETH</p>
-                    <p><strong>Deadline:</strong> {new Date(campaign.deadline * 1000).toLocaleString()}</p>
-                </div>
-                <input
-                    type="number"
-                    placeholder="Donation Amount (ETH)"
-                    onChange={(e) => setDonationAmount((prev) => ({ ...prev, [index]: e.target.value }))}
-                    className="donation-input"
-                />
-                <input
-                    type="text"
-                    placeholder="Your Refund Address"
-                    onChange={(e) => setDonationRefundAddress((prev) => ({ ...prev, [index]: e.target.value }))}
-                    className="donation-input"
-                />
-                <button onClick={() => handleDonate(index)} className="action-button">Donate</button>
-                {Date.now() / 1000 > campaign.deadline && campaign.amountCollected < campaign.target && (
-                    <button onClick={() => handleCheckRefunds(index)} className="action-button">Check Refunds</button>
+                <h2>Active Campaigns</h2>
+                {campaigns.length === 0 ? (
+                    <p className="no-campaigns">No campaigns available.</p>
+                ) : (
+                    campaigns.map((campaign, index) => (
+                        <div key={index} className="campaign-card">
+                            <h3>{campaign.title}</h3>
+                            <p>{campaign.description}</p>
+                            <div className="campaign-details">
+                                <p>Amount Collected: {ethers.utils.formatEther(campaign.amountCollected)} ETH</p>
+                                <p>Target: {ethers.utils.formatEther(campaign.target)} ETH</p>
+                                <p>Deadline: {new Date(campaign.deadline * 1000).toLocaleString()}</p>
+                            </div>
+                            <input
+                                type="number"
+                                placeholder="Donation Amount (ETH)"
+                                value={donationAmount[index] || ""}
+                                onChange={(e) => setDonationAmount({ ...donationAmount, [index]: e.target.value })}
+                            />
+                            <button onClick={() => handleDonate(index)}>Donate</button>
+                            <button onClick={() => handleCheckRefunds(index)}>Check Refunds</button>
+                        </div>
+                    ))
                 )}
             </div>
-        ))
-    )}
-</div>
-
         </div>
     );
 }
