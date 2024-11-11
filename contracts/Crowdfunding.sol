@@ -9,7 +9,6 @@ contract CrowdFunding {
         uint256 target;
         uint256 deadline;
         uint256 amountCollected;
-        string image;
         address[] donators;
         uint256[] donations;
         uint256[] donationTimestamps; // Store timestamps of donations
@@ -27,8 +26,7 @@ contract CrowdFunding {
         string memory _title,
         string memory _description,
         uint256 _target,
-        uint256 _deadline,
-        string memory _image
+        uint256 _deadline
     ) public returns (uint256) {
         require(_target > 0, "Target must be greater than zero.");
         require(_deadline > block.timestamp, "Deadline should be in the future.");
@@ -41,7 +39,6 @@ contract CrowdFunding {
         campaign.target = _target;
         campaign.deadline = _deadline;
         campaign.amountCollected = 0;
-        campaign.image = _image;
 
         emit CampaignCreated(numberOfCampaigns, msg.sender, _target, _deadline);
 
