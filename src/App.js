@@ -140,40 +140,44 @@ function App() {
                 <textarea name="description" placeholder="Description" required></textarea>
                 <input type="number" name="target" placeholder="Target Amount (ETH)" required />
                 <input type="datetime-local" name="deadline" required />
-                <input type="text" name="image" placeholder="Image URL" required />
                 <button type="submit">Create Campaign</button>
             </form>
 
             <div>
-                <h2>Active Campaigns</h2>
-                {campaigns.length === 0 ? (
-                    <p>No campaigns available.</p>
-                ) : (
-                    campaigns.map((campaign, index) => (
-                        <div key={index}>
-                            <h3>{campaign.title}</h3>
-                            <p>{campaign.description}</p>
-                            <p>Target: {ethers.utils.formatEther(campaign.target)} ETH</p>
-                            <p>Collected: {ethers.utils.formatEther(campaign.amountCollected)} ETH</p>
-                            <p>Deadline: {new Date(campaign.deadline * 1000).toLocaleString()}</p>
-                            <input
-                                type="number"
-                                placeholder="Donation Amount (ETH)"
-                                onChange={(e) => setDonationAmount((prev) => ({ ...prev, [index]: e.target.value }))}
-                            />
-                            <input
-                                type="text"
-                                placeholder="Your Refund Address"
-                                onChange={(e) => setDonationRefundAddress((prev) => ({ ...prev, [index]: e.target.value }))}
-                            />
-                            <button onClick={() => handleDonate(index)}>Donate</button>
-                            {Date.now() / 1000 > campaign.deadline && campaign.amountCollected < campaign.target && (
-                                <button onClick={() => handleCheckRefunds(index)}>Check Refunds</button>
-                            )}
-                        </div>
-                    ))
+    <h2>Active Campaigns</h2>
+    {campaigns.length === 0 ? (
+        <p className="no-campaigns">No campaigns available.</p>
+    ) : (
+        campaigns.map((campaign, index) => (
+            <div key={index} className="campaign-card">
+                <h3>{campaign.title}</h3>
+                <p>{campaign.description}</p>
+                <div className="campaign-details">
+                    <p><strong>Target:</strong> {ethers.utils.formatEther(campaign.target)} ETH</p>
+                    <p><strong>Collected:</strong> {ethers.utils.formatEther(campaign.amountCollected)} ETH</p>
+                    <p><strong>Deadline:</strong> {new Date(campaign.deadline * 1000).toLocaleString()}</p>
+                </div>
+                <input
+                    type="number"
+                    placeholder="Donation Amount (ETH)"
+                    onChange={(e) => setDonationAmount((prev) => ({ ...prev, [index]: e.target.value }))}
+                    className="donation-input"
+                />
+                <input
+                    type="text"
+                    placeholder="Your Refund Address"
+                    onChange={(e) => setDonationRefundAddress((prev) => ({ ...prev, [index]: e.target.value }))}
+                    className="donation-input"
+                />
+                <button onClick={() => handleDonate(index)} className="action-button">Donate</button>
+                {Date.now() / 1000 > campaign.deadline && campaign.amountCollected < campaign.target && (
+                    <button onClick={() => handleCheckRefunds(index)} className="action-button">Check Refunds</button>
                 )}
             </div>
+        ))
+    )}
+</div>
+
         </div>
     );
 }
